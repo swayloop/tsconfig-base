@@ -1,10 +1,10 @@
 # Agents
 
-(이 repo 의 한 줄 description — 새 repo 가 채움)
+@swayloop/tsconfig-base — TypeScript 컴파일러 설정 베이스라인. strict + NodeNext + ES2022.
 
-> 작업 영역에 맞는 파일만 필요할 때 read. 처음에 전부 읽지 않음.
+> 작업 영역에 맞는 파일만 필요할 때 read.
 
 | 작업 영역 | 참고 파일 |
 |---|---|
-| 개요 / 명령 | [README.md](README.md) |
-| (필요 시 영역 추가) | |
+| 사용법 / 룰 변경 의도 | [README.md](README.md) |
+| 실제 config | [base.json](base.json) |

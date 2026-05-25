@@ -1,8 +1,29 @@
 {
-  "name": "swayloop-app",
-  "version": "1.0.0",
-  "description": "TODO: 한 줄 설명",
-  "private": true,
+  "name": "@swayloop/tsconfig-base",
+  "version": "0.0.0",
+  "description": "Shared TypeScript compiler config for swayloop org projects",
+  "main": "base.json",
+  "files": [
+    "base.json"
+  ],
+  "keywords": [
+    "tsconfig",
+    "typescript",
+    "swayloop"
+  ],
+  "author": "swayloop",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swayloop/tsconfig-base.git"
+  },
+  "bugs": {
+    "url": "https://github.com/swayloop/tsconfig-base/issues"
+  },
+  "homepage": "https://github.com/swayloop/tsconfig-base#readme",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "prepare": "husky",
     "preinstall": "npx only-allow pnpm"
@@ -10,6 +31,9 @@
   "packageManager": "pnpm@10.18.0",
   "engines": {
     "node": ">=20"
+  },
+  "peerDependencies": {
+    "typescript": ">=5"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.4.3",

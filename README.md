@@ -1,44 +1,55 @@
-# swayloop-template-node
+# @swayloop/tsconfig-base
 
-swayloop org 의 Node 프로젝트 부트스트랩 템플릿. husky + commitlint + release-please + reusable workflows 가 미리 셋업되어 있습니다.
+swayloop org 공통 TypeScript 컴파일러 설정 베이스라인. strict + safety 옵션 + NodeNext.
 
-## 새 프로젝트로 시작하기
+## 설치
 
 ```bash
-npx degit swayloop/template-node my-app
-cd my-app
-git init && git checkout -b main
-pnpm install
-git add -A && git commit -m "chore: bootstrap from swayloop/template-node"
+pnpm add -D @swayloop/tsconfig-base typescript
 ```
 
-그 다음:
+## 사용
 
-1. `package.json` 의 `name`, `description` 수정
-2. GitHub 에 레포 생성: `gh repo create swayloop/my-app --private --source=. --remote=origin --push`
-3. 첫 브랜치는 `git checkout -b dev` 로 만들고 dev 를 디폴트 브랜치로 설정
-4. 시크릿 추가: `gh secret set CLAUDE_CODE_OAUTH_TOKEN -R swayloop/my-app` (claude 워크플로우 쓸 경우)
+`tsconfig.json`:
 
-## 무엇이 들어있나
+```json
+{
+  "extends": "@swayloop/tsconfig-base/base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "include": ["src/**/*"]
+}
+```
 
-| 파일 | 역할 |
+`outDir` / `rootDir` / `include` 등 프로젝트 구조 관련은 각자 추가.
+
+## 포함된 옵션
+
+| 카테고리 | 옵션 |
 |---|---|
-| `.husky/commit-msg` | commitlint 검사 |
-| `.husky/pre-push` | 브랜치 네이밍 규칙 강제 |
-| `.husky/pre-commit` | (스텁) 프로젝트 lint/format 추가 |
-| `commitlint.config.js` | `@swayloop/commitlint-config` extend |
-| `.nvmrc` | Node 20 |
-| `release-please-config.json`, `.release-please-manifest.json` | 릴리즈 자동화 |
-| `.github/workflows/release-please.yml` | org reusable 호출 |
-| `.github/workflows/auto-close-issues.yml` | org reusable 호출 |
-| `.github/workflows/claude-mention.yml` | `@claude` 멘션 응답 (org reusable) |
-| `.github/workflows/ci.yml` | lint/build/test (스크립트 있을 때만 실행) |
+| 타겟 | `target: ES2022`, `module: NodeNext`, `moduleResolution: NodeNext`, `lib: ["ES2022"]` |
+| Strict | `strict`, `noUncheckedIndexedAccess`, `noImplicitOverride`, `noFallthroughCasesInSwitch` |
+| Interop | `esModuleInterop`, `skipLibCheck`, `resolveJsonModule`, `forceConsistentCasingInFileNames`, `verbatimModuleSyntax`, `isolatedModules` |
+| 빌드 | `sourceMap: true`, `declaration: false` (활성화는 프로젝트에서) |
+
+## 다른 환경 오버라이드
+
+React / browser / deno 등은 자기 `tsconfig.json` 에서 덮어쓰기:
+
+```json
+{
+  "extends": "@swayloop/tsconfig-base/base.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "preserve",
+    "module": "ESNext",
+    "moduleResolution": "Bundler"
+  }
+}
+```
 
 ## 표준
 
 브랜치/커밋/릴리즈 규칙은 [swayloop/.github](https://github.com/swayloop/.github/blob/main/docs/workflow.md) 참고.
-
-- 브랜치: `feature → dev → main`
-- 브랜치명: `<type>/<issue#>-<desc>`
-- 커밋: Conventional Commits
-- 릴리즈: dev → main 머지 시 release-please 가 자동 처리
