@@ -1,6 +1,12 @@
 # @swayloop/tsconfig-base
 
-swayloop org 공통 TypeScript 컴파일러 설정 베이스라인. strict + safety 옵션 + NodeNext.
+swayloop org 공통 TypeScript 컴파일러 설정 모음. 3개 variant 제공:
+
+| Variant | 대상 환경 | module / moduleResolution | jsx |
+|---|---|---|---|
+| `base.json` | Node (CLI · 라이브러리 · 서버) | `NodeNext` / `NodeNext` | — |
+| `next.json` | Next.js | `esnext` / `bundler` | `preserve` |
+| `react.json` | Vite / 일반 React | `ESNext` / `bundler` | `react-jsx` |
 
 ## 설치
 
@@ -10,7 +16,7 @@ pnpm add -D @swayloop/tsconfig-base typescript
 
 ## 사용
 
-`tsconfig.json`:
+Node 프로젝트 (`tsconfig.json`):
 
 ```json
 {
@@ -23,32 +29,52 @@ pnpm add -D @swayloop/tsconfig-base typescript
 }
 ```
 
-`outDir` / `rootDir` / `include` 등 프로젝트 구조 관련은 각자 추가.
-
-## 포함된 옵션
-
-| 카테고리 | 옵션 |
-|---|---|
-| 타겟 | `target: ES2022`, `module: NodeNext`, `moduleResolution: NodeNext`, `lib: ["ES2022"]` |
-| Strict | `strict`, `noUncheckedIndexedAccess`, `noImplicitOverride`, `noFallthroughCasesInSwitch` |
-| Interop | `esModuleInterop`, `skipLibCheck`, `resolveJsonModule`, `forceConsistentCasingInFileNames`, `verbatimModuleSyntax`, `isolatedModules` |
-| 빌드 | `sourceMap: true`, `declaration: false` (활성화는 프로젝트에서) |
-
-## 다른 환경 오버라이드
-
-React / browser / deno 등은 자기 `tsconfig.json` 에서 덮어쓰기:
+Next.js 프로젝트:
 
 ```json
 {
-  "extends": "@swayloop/tsconfig-base/base.json",
+  "extends": "@swayloop/tsconfig-base/next.json",
   "compilerOptions": {
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "jsx": "preserve",
-    "module": "ESNext",
-    "moduleResolution": "Bundler"
-  }
+    "paths": { "@/*": ["./src/*"] },
+    "plugins": [{ "name": "next" }]
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }
 ```
+
+Vite/React 프로젝트:
+
+```json
+{
+  "extends": "@swayloop/tsconfig-base/react.json",
+  "compilerOptions": {
+    "types": ["vite/client"]
+  },
+  "include": ["src"]
+}
+```
+
+## 공통으로 포함된 strict / safety 옵션
+
+3개 variant 모두 공통:
+
+- `strict`, `noUncheckedIndexedAccess`, `noImplicitOverride`, `noFallthroughCasesInSwitch`
+- `esModuleInterop`, `skipLibCheck`, `resolveJsonModule`, `forceConsistentCasingInFileNames`, `isolatedModules`
+
+## variant 별 차이
+
+| | base | next | react |
+|---|---|---|---|
+| target | ES2022 | ES2022 | ES2022 |
+| lib | `["ES2022"]` | `["DOM", "DOM.Iterable", "ES2022"]` | `["DOM", "DOM.Iterable", "ES2022"]` |
+| module | NodeNext | esnext | ESNext |
+| moduleResolution | NodeNext | bundler | bundler |
+| jsx | — | preserve | react-jsx |
+| noEmit | false (default) | true | true |
+| verbatimModuleSyntax | true | false | true |
+| allowJs | false | true | false |
+| incremental | false | true | false |
 
 ## 표준
 
